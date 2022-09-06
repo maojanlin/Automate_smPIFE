@@ -302,11 +302,13 @@ if __name__ == "__main__":
     parser.add_argument('-pt', '--pattern_csv_file', help='donor pattern csv file')
     parser.add_argument('-br', '--bleach_report_file', help='bleach pattern report, optional')
     parser.add_argument('-nbr', '--no_bleach_report_file', help='no bleach pattern report, optional')
+    parser.add_argument('-o', '--output', help='output report header')
     args = parser.parse_args()
 
     pattern_csv_file      = args.pattern_csv_file
     bleach_report_file    = args.bleach_report_file
     no_bleach_report_file = args.no_bleach_report_file
+    output_header         = args.output
 
     matrix_data = read_pattern(pattern_csv_file)
     set_1_positive, set_2_positive = iteration_check(matrix_data)
@@ -327,3 +329,10 @@ if __name__ == "__main__":
         print("False Positive (Addit.):", sorted(set_2_positive - set_2_annotation))
     else:
         print("Bleach Detect:", sorted(set_2_positive))
+    
+    index_PIFE_no_bleached  = np.array(sorted(set_1_positive))
+    index_PIFE_bleached     = np.array(sorted(set_2_positive))
+    
+    np.savetxt(output_header + '.smPIFE_bleached.csv', [index_PIFE_bleached], delimiter='\n', fmt='%d')
+    np.savetxt(output_header + '.smPIFE_no_bleached.csv', [index_PIFE_no_bleached], delimiter='\n', fmt='%d')
+    
